@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "83ede390ef8b7e1baf4619f07d16cf13"
-application_url = "https://morrison-therefore-slot-fireplace.trycloudflare.com"
+application_url = "https://kenneth-mali-assignments-drug.trycloudflare.com"
 embedded = true
 name = "Account-Wishlist"
 handle = "account-wishlist"
@@ -19,13 +19,13 @@ api_version = "2025-04"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products"
+scopes = "write_products,write_customers,read_customers,customer_write_customers,customer_read_customers"
 
 [auth]
 redirect_urls = [
-  "https://morrison-therefore-slot-fireplace.trycloudflare.com/auth/callback",
-  "https://morrison-therefore-slot-fireplace.trycloudflare.com/auth/shopify/callback",
-  "https://morrison-therefore-slot-fireplace.trycloudflare.com/api/auth/callback"
+  "https://kenneth-mali-assignments-drug.trycloudflare.com/auth/callback",
+  "https://kenneth-mali-assignments-drug.trycloudflare.com/auth/shopify/callback",
+  "https://kenneth-mali-assignments-drug.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]
