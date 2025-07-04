@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "83ede390ef8b7e1baf4619f07d16cf13"
-application_url = "https://kenneth-mali-assignments-drug.trycloudflare.com"
+application_url = "https://dista-accountpage-wishlist.onrender.com"
 embedded = true
 name = "Account-Wishlist"
 handle = "account-wishlist"
@@ -23,9 +23,9 @@ scopes = "write_products,write_customers,read_customers,customer_write_customers
 
 [auth]
 redirect_urls = [
-  "https://kenneth-mali-assignments-drug.trycloudflare.com/auth/callback",
-  "https://kenneth-mali-assignments-drug.trycloudflare.com/auth/shopify/callback",
-  "https://kenneth-mali-assignments-drug.trycloudflare.com/api/auth/callback"
+  "https://dista-accountpage-wishlist.onrender.com/auth/callback",
+  "https://dista-accountpage-wishlist.onrender.com/auth/shopify/callback",
+  "https://dista-accountpage-wishlist.onrender.com/api/auth/callback"
 ]
 
 [pos]
