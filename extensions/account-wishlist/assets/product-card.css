@@ -29,7 +29,7 @@ text-transform: uppercase;
   transition: all 0.3s ease;
   width: 100%;
   display: flex;
-  /* border-radius: 7px; */
+  border-radius: 7px;
   flex-direction: column;
   padding: 10px;
 
