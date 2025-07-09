@@ -359,11 +359,10 @@
 .wishlist-quick-view-right-content,
 .wishlist-quick-view-thumbnails {
   overflow-y: auto;
-  scrollbar-width: thin;           /* Firefox */
-  scrollbar-color: #bdbdbd #f5f5f5; /* Firefox */
+  scrollbar-width: thin;           
+  scrollbar-color: #bdbdbd #f5f5f5;
 }
 
-/* Chrome, Edge, Safari */
 .wishlist-quick-view-right-content::-webkit-scrollbar,
 .wishlist-quick-view-thumbnails::-webkit-scrollbar {
   width: 5px;

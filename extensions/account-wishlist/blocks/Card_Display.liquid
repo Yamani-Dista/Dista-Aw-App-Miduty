@@ -95,10 +95,31 @@
         this.reply = {};
         this.carouselController = null;
 
+        document.addEventListener('wishlist:updated', () => {
+          console.log('Wishlist updated event received');
+          this.fetchWishlist();
+        });
+        
         window.money_format = '{{ shop.money_with_currency_format }}';
       }
 
       async init() {
+       await this.fetchWishlist();
+
+        if (this.titleElement) {
+          this.titleElement.textContent = this.container.dataset.wishlistTitle || 'Wishlist Products';
+        }
+
+        if (this.displayMode === 'carousel') {
+          this.carouselWrapper.style.display = 'block';
+          this.grid.style.display = 'none';
+        } else {
+          this.carouselWrapper.style.display = 'none';
+          this.grid.style.display = 'grid';
+        }
+      }
+
+      {% comment %} async init() {
         const observer = new IntersectionObserver(
           async (entries) => {
             for (const entry of entries) {
@@ -123,7 +144,7 @@
           this.carouselWrapper.style.display = 'none';
           this.grid.style.display = 'grid';
         }
-      }
+      } {% endcomment %}
 
       async fetchWishlist() {
         const customerId = '{{ customer.id }}';

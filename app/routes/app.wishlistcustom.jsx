@@ -77,7 +77,7 @@ export const action = async ({ request }) => {
           displayMode,
           productsPerRow,
           initialProducts,
-          cardLayout, // Update cardLayout in the database
+          cardLayout, 
           updatedAt: new Date()
         },
       });
@@ -98,7 +98,6 @@ export const action = async ({ request }) => {
 
     return json({ success: true });
   } catch (error) {
-    console.error('Database error:', error);
     return json({ success: false, error: error.message }, { status: 500 });
   }
 };
@@ -115,7 +114,7 @@ export default function CustomCSSAdmin() {
   const [initialProductsValue, setInitialProductsValue] = useState(initialProducts);
   const [success, setSuccess] = useState(false);
   const [selectedTab, setSelectedTab] = useState(0);
-  const [cardLayoutState, setCardLayoutState] = useState(cardLayout); // New state for layout
+  const [cardLayoutState, setCardLayoutState] = useState(cardLayout); 
 
   useEffect(() => {
     if (actionData?.success) {
@@ -192,7 +191,6 @@ export default function CustomCSSAdmin() {
         primaryAction={{
           content: "Save Settings",
           onAction: () => {
-            // Submit the form programmatically
             document.getElementById('custom-css-form')?.requestSubmit();
           },
           primary: true

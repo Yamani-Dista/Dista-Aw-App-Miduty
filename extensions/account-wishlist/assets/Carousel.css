@@ -319,7 +319,7 @@ grid-template-columns: repeat(2, 1fr) !important;
 flex: 0 0 calc(100% + 75px) !important;
 }
 .wishlist-card-delete{
-right:75px !important;
+right:5px !important;
 }
 .wishlist-card--horizontal .wishlist-details{
 width:200px !important;

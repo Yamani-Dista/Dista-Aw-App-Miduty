@@ -78,7 +78,6 @@ export const action = async ({ request }) => {
     const accessToken =session.accessToken
 
     try {
-
       const response = await fetch(`https://${storeHostname}/admin/api/2023-07/graphql.json`, {
         method: "POST",
         headers: {
@@ -88,14 +87,12 @@ export const action = async ({ request }) => {
         body: JSON.stringify(mutation)
       });
       const result = await response.json();
-      console.log("customerUpdate", result);
       if (result.data?.customerUpdate?.userErrors?.length) {
         return json(
           { success: false },
           { message: result.data.customerUpdate.userErrors },
           { headers: { "Access-Control-Allow-Origin": "*" } }
         );
-
       }
       return json(
         { success: true },
@@ -103,14 +100,12 @@ export const action = async ({ request }) => {
         { headers: { "Access-Control-Allow-Origin": "*" } }
       );
     } catch (err) {
-      console.log(err);
       return json(
         { message: "Internal Server Error" },
         { headers: { "Access-Control-Allow-Origin": "*" } }
       );
     }
   } catch (error) {
-    console.error("Error in updating profile:", error);
     return json(
       { message: "Internal Server Error" },
       { headers: { "Access-Control-Allow-Origin": "*" } }

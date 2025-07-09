@@ -20,7 +20,6 @@ import {
 import { useState , useEffect} from 'react';
 import shopify from "../shopify.server";
 
-// --- Loader: fetch settings for a shop ---
 export async function loader({ request }) {
     const { session } = await shopify.authenticate.admin(request);
     const { shop } = session;
@@ -28,17 +27,14 @@ export async function loader({ request }) {
         where: { shop },
     });
 
-    // If not found, create default settings
     if (!settings) {
         settings = await prisma.widgetSettings.create({
             data: { shop },
         });
     }
-
     return json({ settings });
 }
 
-// --- Action: update settings for a shop ---
 export async function action({ request }) {
     const form = await request.formData();
     const { session } = await shopify.authenticate.admin(request);
@@ -80,14 +76,13 @@ export default function AdminSettings() {
    
     const [text, setText] = useState(settings.starsText || '{count} review/reviews');
     const [saveText, setSaveText] = useState(settings.saveText || 'Save {percent}%');
-    const [activeModal, setActiveModal] = useState(null); // 'stars' | 'save' | null
+    const [activeModal, setActiveModal] = useState(null); 
 
     useEffect(() => {
         setText(settings.starsText || '{count} review/reviews');
         setSaveText(settings.saveText || 'Save {percent}%');
     }, [settings]);
 
-    // Replace {count} with a sample value for preview, and style the count
     function getStyledPreview(text) {
         const sampleCount = '97';
         const parts = text.split('{count}');
@@ -100,7 +95,6 @@ export default function AdminSettings() {
         );
     }
 
-    // Replace {percent} with a sample value for preview, and style the percent
     function getStyledSavePreview(text) {
         const samplePercent = '30';
         const parts = text.split('{percent}');
@@ -113,7 +107,6 @@ export default function AdminSettings() {
         );
     }
 
-    // Modal content for editing stars
     const starEditModal = (
         <Modal
             open={activeModal === 'stars'}
@@ -140,7 +133,6 @@ export default function AdminSettings() {
         </Modal>
     );
 
-    // Modal content for editing save
     const saveEditModal = (
         <Modal
             open={activeModal === 'save'}
@@ -173,7 +165,6 @@ export default function AdminSettings() {
                 <Layout.Section>
                     <Box paddingBlockEnd="400" />
                     <div style={{ display: 'flex', gap: 32, alignItems: 'flex-start' }}>
-                        {/* Stars Section */}
                         <Card>
                             <BlockStack gap="400">
                                 <InlineStack align="space-between">
@@ -192,7 +183,7 @@ export default function AdminSettings() {
                                 </Box>
                             </BlockStack>
                         </Card>
-                        {/* Save Section */}
+
                         <Card>
                             <BlockStack gap="400">
                                 <InlineStack align="space-between">

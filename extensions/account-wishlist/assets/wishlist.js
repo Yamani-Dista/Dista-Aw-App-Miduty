@@ -64,6 +64,7 @@ class WishlistButton {
         const endpoint = isAdding ? 'apiwishlist' : 'apiremove';
          this.setButtonState(isAdding);
         try {
+          console.log
           const response = await fetch(`/apps/apw/app/${endpoint}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -76,6 +77,8 @@ class WishlistButton {
             })
           });
           const result = await response.json();
+         
+          document.dispatchEvent(new CustomEvent('wishlist:updated'));
           if (result.token && !this.token) {
             this.token = result.token;
             window.WishlistUtils.setCookie('jwt', this.token, 3.5);
@@ -241,11 +244,12 @@ class WishlistIconManager {
               uid: this.uid,
               storeUrl: this.storeUrl,
               token: this.token,
-              currency: this.currency // added currency here too
+              currency: this.currency 
             })
           });
 
           const result = await response.json();
+          document.dispatchEvent(new CustomEvent('wishlist:updated'));
           if (result.token && !this.token ) {
             this.token = result.token;
             window.WishlistUtils.setCookie('jwt', this.token, 3.5);

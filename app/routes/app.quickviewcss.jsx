@@ -19,7 +19,6 @@ import shopify from "../shopify.server";
 
 const prisma = new PrismaClient();
 
-// Add !important to every property:value
 function addImportantToCSS(css) {
   return css.replace(/([^;{}\n]+)(;)/g, (match, declaration, end) => {
     if (declaration.includes('!important')) return match;

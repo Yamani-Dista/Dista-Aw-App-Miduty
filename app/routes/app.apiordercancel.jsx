@@ -3,15 +3,12 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-
 export const action = async ({ request }) => {
   try {
     const body = await request.json();
     const orderId = body.orderId;
     const storeUrl = body.storeUrl
-    const storeHostname = new URL(storeUrl).hostname; // Get full hostname like "distaxstaging.myshopify.com"
-
-
+    const storeHostname = new URL(storeUrl).hostname; 
     if (!orderId) {
       return json(
         { success: false, message: "Missing orderId" },
@@ -31,7 +28,6 @@ export const action = async ({ request }) => {
           script: null,
         },
       });
-      console.log(`Created default cancelOrderType for shop: ${shop}`);
     }
 
     if (cancelType?.cancelOrderBehavior === "script") {
@@ -70,7 +66,6 @@ export const action = async ({ request }) => {
       );
     } else {
       const errorText = await response.text();
-      console.error("Shopify cancel error:", errorText);
       return json(
         { success: false, message: "Failed to cancel the order." },
         { headers: { "Access-Control-Allow-Origin": "*" } }
@@ -78,7 +73,6 @@ export const action = async ({ request }) => {
     }
 
   } catch (error) {
-    console.error("Action error:", error);
     return json(
       { success: false, message: "Internal Server Error" },
       { status: 500, headers: { "Access-Control-Allow-Origin": "*" } }

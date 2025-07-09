@@ -78,7 +78,6 @@ export const action = async ({ request }) => {
     const base_url = credentials?.baseUrl || null;
     verified = await verifyHmac(customerId, secret);
     if (!verified) {
-      console.error("HMAC verification failed.");
       return json(
         { error: "Unauthorized" },
         {
@@ -102,7 +101,6 @@ export const action = async ({ request }) => {
         newToken = jwtResponse.data.access_token;
         token = newToken;
       } catch (err) {
-        console.error("Failed to fetch JWT token:", err);
         return json(
           { error: "Unauthorized" },
           {
@@ -128,7 +126,6 @@ export const action = async ({ request }) => {
       { headers: CORS_HEADERS }
     );
   } catch (error) {
-    console.error("Error in action:", error);
     return json(
       { reply: "Internal Server Error" },
       {
@@ -153,7 +150,6 @@ async function fetchShopifyProducts(data, currency, storeUrl) {
   }
 
   const accessToken = session.accessToken
-
 
   const productResponse = await fetch(
     `https://${storeUrl}/admin/api/2023-10/graphql.json`,
@@ -245,7 +241,6 @@ export const loader = async ({ request }) => {
     const widgetSettings = await prisma.widgetSettings.findFirst({
       where: { shop: storeUrl },
     });
-    console.log(widgetSettings)
     return json(
       {
         reply: cssEntry,
@@ -319,7 +314,6 @@ export const loader = async ({ request }) => {
         newToken = jwtResponse.data.access_token;
         token = newToken;
       } catch (err) {
-        console.error("Failed to fetch JWT token:", err);
         return json(
           { error: "Unauthorized" },
           {
@@ -344,7 +338,6 @@ export const loader = async ({ request }) => {
     const productIds = data.wishlist_items.map(product => product.product_id);
     const productData = await fetchShopifyProducts(productIds, currency, storeUrl);
     if (!productData.data || !productData.data.nodes) {
-      console.error("Invalid product data response:", productData);
       return json({ reply: "Invalid product data" }, { status: 500, headers: CORS_HEADERS });
     }
     return json(
@@ -352,7 +345,6 @@ export const loader = async ({ request }) => {
       { headers: CORS_HEADERS }
     );
   } catch (error) {
-    console.error("Wishlist loader error:", error?.response?.data || error.message);
     return json(
       { reply: "Internal Server Error" },
       {

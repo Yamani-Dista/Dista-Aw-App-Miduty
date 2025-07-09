@@ -89,11 +89,9 @@
         }
 
          const quickViewButtons = cardEl.querySelectorAll('.quick-view-btn');
-         console.log('Quick View Buttons:', quickViewButtons, 'Product:', product);
         const hasRealVariants =
           product.variants.edges && product.variants.edges.length > 1
           || (product.variants.edges && product.variants.edges.length === 1 && product.variants.edges[0].node.title !== 'Default Title');
-        console.log('Has Real Variants:', hasRealVariants, 'Product Variants:', product.variants, product.variants.edges.length );
         quickViewButtons.forEach(btn => {
           btn.setAttribute('data-product', JSON.stringify(product));
           btn.setAttribute('data-title', encodeURIComponent(product.title));
@@ -230,7 +228,6 @@
       }
     }
 
-    // Carousel Controller
     class CarouselControllerwishlist {
       constructor(carousel, prevBtn, nextBtn, cardLayout) {
         this.carousel = carousel;

@@ -14,7 +14,6 @@ document.body.addEventListener('click', function (event) {
         if (!hasVariants) {
             try {
                 const product = JSON.parse(productData);
-                console.log('Product Data:', product);
                 const variantId = product.variants?.edges?.[0]?.node?.id?.split('/').pop();
 
                 if (!variantId) return;
@@ -24,7 +23,6 @@ document.body.addEventListener('click', function (event) {
                     buttonSpan.dataset.originalText = buttonSpan.textContent;
                 }
                 const originalText = buttonSpan.dataset.originalText;
-                console.log('Original Button Text:;;', buttonSpan, originalText);
                 buttonSpan.textContent = actionType === 'reorder' || actionType === 'buy-now' ? 'Processing...' : 'Adding...';
                 button.disabled = true;
 
@@ -38,14 +36,11 @@ document.body.addEventListener('click', function (event) {
                         window.location.href = '/checkout';
                     });
                 } else {
-
-                    console.log('Adding to cart:');
                     fetch('/cart/add.js', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ id: variantId, quantity: 1 }),
                     }).then(() => {
-                        // Optionally show mini cart or feedback
                         const desktopCartCheckbox = document.getElementById('minicart__button--header--default');
                         const mobileCartCheckbox = document.getElementById('minicart__button--header--default-mobile');
                         if (desktopCartCheckbox) desktopCartCheckbox.checked = true;
@@ -64,7 +59,6 @@ document.body.addEventListener('click', function (event) {
 
         let atcTextRVP = button.querySelector('.wishlist-atc-button-text')?.textContent.trim() || '';
         let buyNowText = button.querySelector('.wishlist-buy-now-button-text')?.textContent.trim() || '';
-        console.log('atcTextRVP:', atcTextRVP, 'buyNowText:', buyNowText);
         try {
             const product = JSON.parse(productData);
             const decodedTitle = decodeURIComponent(productTitle);
@@ -84,7 +78,7 @@ function showWishlistModal(product, actionType, buttonTexts = {}) {
         return;
     }
     console.log('showWishlistModal called with product:', product, 'actionType:', actionType, 'buttonTexts:', buttonTexts);
-    const AppUtils = window.RecentlyViewedUtils || window.RecentlyOrderedUtils;
+    const AppUtils = window.WishlistUtils;
     if (!AppUtils) {
         console.error('No utility object (WishlistUtils) found.');
         return;
@@ -139,7 +133,6 @@ function showWishlistModal(product, actionType, buttonTexts = {}) {
     <div class="wishlist-variant-buttons">
       ${values
                     .map((value, vIdx) => {
-                        // Find if this value is sold out
                         const isSoldOut = !(product.variants.edges || []).some(variant =>
                             (variant.node.selectedOptions || []).some(opt => opt.name === optionName && opt.value === value) &&
                             variant.node.availableForSale !== false
@@ -256,99 +249,9 @@ function showWishlistModal(product, actionType, buttonTexts = {}) {
     </div>
   `;
 
-    //     modal.innerHTML = `
-    //     <div class="wishlist-quick-view-modal">
-    //         <button class="wishlist-close">&times;</button>
-    //         <div class="wishlist-main-product-image">
-    //             <a class="wishlist-back-to-shop" onclick="document.querySelector('.wishlist-quick-view-modal-wrapper').remove(); document.body.style.overflow = ''">Back to shop</a>
-    //             <div class="wishlist-quick-view-left-content">
-    //                 <div class="wishlist-thumbnail-carousel-wrapper">
-    //                   <button class="wishlist-thumb-arrow wishlist-thumb-arrow-up">
-    //                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
-    //                   </button>
-    //                   <div class="wishlist-quick-view-thumbnails" tabindex="0">
-    //                     ${allImages
-    //             .map(
-    //                 (image, index) => `
-    //                         <img 
-    //                         src="${image.url}" 
-    //                         alt="Thumbnail ${index + 1}" 
-    //                         class="wishlist-thumbnail-image" data-thumb-index="${index}" 
-    //                         onclick="document.getElementById('wishlist-main-product-image').src='${image.url}'"
-    //                         />
-    //                     `
-    //             )
-    //             .join('')}
-    //                   </div>
-    //                   <button class="wishlist-thumb-arrow wishlist-thumb-arrow-down">
-    //                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
-    //                   </button>
-    //                 </div>
-    //                 <div class="wishlist-main-image-carousel-wrapper">
-    //                   <button class="wishlist-main-arrow wishlist-main-arrow-left">
-    //                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-    //                   </button>
-    //                   <div class="wishlist-quick-view-main-image-list" tabindex="0">
-    //                     ${allImages.map((img, idx) => `
-    //                       <img src="${img.url}" alt="${productTitle}" class="wishlist-main-image-item" data-main-index="${idx}" draggable="false" />
-    //                     `).join('')}
-    //                   </div>
-    //                   <button class="wishlist-main-arrow wishlist-main-arrow-right">
-    //                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-    //                   </button>
-    //                 </div>
-    //             </div>
-    //             <div class="wishlist-quick-view-right-content">
-    //                 <a class="wishlist-quick-view-product-title" href="${productHandle}">
-    //                     ${productTitle}
-    //                 </a>
-    //                 ${(product.rating && product.ratingCount) ? `
-    //                 <div class="wishlist-quick-view-reviews">
-    //                     <span class="wishlist-qv-reviews-badge__stars" data-score="${product.rating}">
-    //                         ${renderStars(product.rating)}
-    //                     </span>
-    //                     <span class="wishlist-qv-reviews-badge__text">
-    //                         <strong>${product.ratingCount} Review${(product.ratingCount == 1) ? '' : 's'}</strong>
-    //                     </span>
-    //                 </div>
-    //                 ` : ''}
-    //                  <a href="${productHandle}" target="_blank" class="wishlist-view-details">view full details</a>
-
-    //                 <div class="wishlist-price-wrapper" id="wishlist-quick-view-price-wrapper">
-    //                   <div class="wishlist-compare-at-row">
-    //                     <span id="wishlist-quick-view-compare-price" class="wishlist-compare-at-price"></span>
-    //                   </div>
-    //                   <div class="wishlist-price-row">
-    //                     <span id="wishlist-quick-view-price"></span>
-    //                     <span class="wishlist-vertical-separator">|</span>
-    //                     <span id="wishlist-quick-view-discount-badge" class="wishlist-discount-inline" style="display:none"></span>
-    //                   </div>
-    //                 </div>
-    //                 <form id="wishlist-quick-view-form">
-    //                     <div id="wishlist-quick-view-soldout-message" style="display:none; color:#000; font-weight:bold; margin-bottom:8px;">Sold out</div>
-    //                     <div class="wishlist-variants-dropdown-wrapper">
-    //                     ${optionsHtml}
-    //                     </div>
-    //                     <div class="wishlist-add-to-cart-container">
-    //                         <div class="wishlist-quantity-selector">
-    //                             <button type="button" id="wishlist-decrement-qty">-</button>
-    //                             <input type="number" id="wishlist-quick-view-quantity" name="quantity" value="1" min="1" autocomplete="off" />
-    //                             <button type="button" id="wishlist-increment-qty">+</button>
-    //                         </div>
-    //                         <button type="submit" class="wishlist-add-to-cart-button">
-    //                           <span class="wishlist-add-to-cart-text">${buttonLabel}</span>
-    //                         </button>
-    //                     </div>
-    //                 </form>
-    //             </div>
-    //         </div>
-    //     </div>
-    //   `;
-
     modalWrapper.appendChild(modal);
     document.body.appendChild(modalWrapper);
 
-    // thumbnail
     const thumbArrowUp = modal.querySelector('.wishlist-thumb-arrow-up');
     const thumbArrowDown = modal.querySelector('.wishlist-thumb-arrow-down');
     const thumbWrapper = modal.querySelector('.wishlist-quick-view-thumbnails');
@@ -431,10 +334,6 @@ function showWishlistModal(product, actionType, buttonTexts = {}) {
     // Add to Cart functionality for modal
     modal.querySelector('#wishlist-quick-view-form').addEventListener('submit', function (e) {
         e.preventDefault();
-
-        // Use the selectedOptions from button logic instead of looking for select elements
-        // selectedOptions is already defined and updated when buttons are clicked
-
         // Find the matching variant
         const matchedVariant =
             (product.variants.edges || []).find((variant) => {
@@ -443,8 +342,6 @@ function showWishlistModal(product, actionType, buttonTexts = {}) {
                     variant.node.selectedOptions.some((selOpt) => selOpt.name === opt.name && selOpt.value === opt.value)
                 );
             }) || product.variants.edges[0];
-        console.log("product.variants.edges:", product.variants.edges);
-        console.log('Matchedddddddd Variant:', matchedVariant);
         const variantId = matchedVariant.node.id ? matchedVariant.node.id.split('/').pop() : null;
         const quantity = parseInt(qtyInput.value, 10) || 1;
         const button = modal.querySelector('.wishlist-add-to-cart-button');
@@ -469,7 +366,6 @@ function showWishlistModal(product, actionType, buttonTexts = {}) {
                 return response.json();
             })
             .then((data) => {
-                // Optionally close modal here if you want
                 modal.remove();
                 modalWrapper.remove();
                 document.body.style.overflow = '';
@@ -492,11 +388,9 @@ function showWishlistModal(product, actionType, buttonTexts = {}) {
                     }, 2000);
                 }
 
-                // Update product title to reflect selected variant
                 const productTitleEl = modal.querySelector('.wishlist-quick-view-product-title');
                 if (productTitleEl && matchedVariant) {
                     let baseTitle = product.title;
-                    // If the product title ends with the first variant's title, remove it
                     const firstVariantTitle = product.variants.edges[0]?.node?.title;
                     const formattedVariantTitle = formatVariantTitle(matchedVariant.node.title);
                     if (
@@ -514,7 +408,6 @@ function showWishlistModal(product, actionType, buttonTexts = {}) {
                 }
             })
             .catch((error) => {
-                console.error('Add to cart error:', error);
                 buttonSpan.textContent = 'Error';
                 setTimeout(() => {
                     if (buttonSpan.classList && buttonSpan.classList.contains('wishlist-add-to-cart-text')) {
@@ -527,14 +420,12 @@ function showWishlistModal(product, actionType, buttonTexts = {}) {
             });
     });
 
-    // Close modal on clicking the close button
     modal.querySelector('.wishlist-close').addEventListener('click', () => {
         modal.remove();
         modalWrapper.remove();
         document.body.style.overflow = '';
     });
 
-    // Close modal on clicking outside the modal content
     modalWrapper.addEventListener('click', (event) => {
         if (event.target === modalWrapper) {
             modal.remove();
@@ -582,7 +473,6 @@ function showWishlistModal(product, actionType, buttonTexts = {}) {
     }
 
     function updatePriceByVariant() {
-        console.log("product.variants.edges", product.variants.edges, "selectedOptions", selectedOptions);
         const addToCartBtn = modal.querySelector('.wishlist-add-to-cart-button');
         const anyUnselected = selectedOptions.some(opt => !opt.value);
         const atcTextSpan = addToCartBtn.querySelector('.wishlist-add-to-cart-text');
@@ -591,10 +481,8 @@ function showWishlistModal(product, actionType, buttonTexts = {}) {
             if (atcTextSpan) atcTextSpan.textContent = 'MAKE A SELECTION';
             addToCartBtn.style.opacity = '0.7';
             addToCartBtn.style.pointerEvents = 'none';
-            // Hide sold out message
             const soldOutMsg = modal.querySelector('#wishlist-quick-view-soldout-message');
             if (soldOutMsg) soldOutMsg.style.display = 'none';
-            // Set product title to base title + selected options (if any)
             const productTitleEl = modal.querySelector('.wishlist-quick-view-product-title');
             if (productTitleEl) {
                 const selectedLabels = selectedOptions.filter(opt => opt.value).map(opt => opt.value);
@@ -613,8 +501,7 @@ function showWishlistModal(product, actionType, buttonTexts = {}) {
                     variant.node.selectedOptions.some((selOpt) => selOpt.name === opt.name && selOpt.value === opt.value)
                 );
             }) || product.variants.edges[0];
-        console.log('Matched Variant:', matchedVariant);
-
+       
         let price = '';
         let compareAtPrice = '';
         if (
@@ -623,7 +510,6 @@ function showWishlistModal(product, actionType, buttonTexts = {}) {
             matchedVariant.node.presentmentPrices.edges.length > 0
         ) {
             const priceNode = matchedVariant.node.presentmentPrices.edges[0].node;
-            console.log('Price Node:', priceNode);
             price = priceNode.price.amount;
             compareAtPrice = priceNode.compareAtPrice ? priceNode.compareAtPrice.amount : '';
         }
@@ -704,132 +590,13 @@ function showWishlistModal(product, actionType, buttonTexts = {}) {
         }
     }
 
-    // function updatePriceByVariant() {
-    //     const addToCartBtn = modal.querySelector('.wishlist-add-to-cart-button');
-    //     // If any option is unselected, disable Add to Cart and show 'MAKE A SELECTION'
-    //     const anyUnselected = selectedOptions.some(opt => !opt.value);
-    //     const atcTextSpan = addToCartBtn.querySelector('.wishlist-add-to-cart-text');
-    //     if (anyUnselected) {
-    //         addToCartBtn.disabled = true;
-    //         if (atcTextSpan) atcTextSpan.textContent = 'MAKE A SELECTION';
-    //         addToCartBtn.style.opacity = '0.7';
-    //         addToCartBtn.style.pointerEvents = 'none';
-    //         // Do NOT clear price/compare/badge, just leave them as they are
-    //         // Hide sold out message
-    //         const soldOutMsg = modal.querySelector('#wishlist-quick-view-soldout-message');
-    //         if (soldOutMsg) soldOutMsg.style.display = 'none';
-    //         // Set product title to base title + selected options (if any)
-    //         const productTitleEl = modal.querySelector('.wishlist-quick-view-product-title');
-    //         if (productTitleEl) {
-    //             const selectedLabels = selectedOptions.filter(opt => opt.value).map(opt => opt.value);
-    //             if (selectedLabels.length > 0) {
-    //                 productTitleEl.textContent = product.title + ' - ' + selectedLabels.join(' - ');
-    //             } else {
-    //                 productTitleEl.textContent = product.title;
-    //             }
-    //         }
-    //         return;
-    //     }
-
-    //     // Use selectedOptions from button logic
-    //     const matchedVariant =
-    //         (product.variants.edges || []).find((variant) => {
-    //             if (!variant.selectedOptions) return false;
-    //             return selectedOptions.every((opt) =>
-    //                 variant.selectedOptions.some((selOpt) => selOpt.name === opt.name && selOpt.value === opt.value)
-    //             );
-    //         }) || product.variants.edges[0];
-    //     console.log('Matched Variant:', matchedVariant);
-    //     // Show/hide sold out message
-    //     const soldOutMsg = modal.querySelector('#wishlist-quick-view-soldout-message');
-    //     if (matchedVariant.availableForSale === false) {
-    //         soldOutMsg.style.display = '';
-    //     } else {
-    //         soldOutMsg.style.display = 'none';
-    //     }
-
-    //     // Update price and compare at price
-    //     const priceEl = modal.querySelector('#wishlist-quick-view-price');
-    //     const comparePriceEl = modal.querySelector('#wishlist-quick-view-compare-price');
-    //     const badgeEl = modal.querySelector('#wishlist-quick-view-discount-badge');
-    //     const separator = modal.querySelector('.wishlist-vertical-separator');
-    //     const formattedPrice = parseFloat(matchedVariant.presentmentPrice).toFixed(2);
-    //     priceEl.textContent = window.CurrencyUtils.formatMoneyCurrency(String(formattedPrice), window.money_format);
-    //     if (
-    //         matchedVariant.presentmentCompareAtPrice &&
-    //         matchedVariant.presentmentCompareAtPrice !== matchedVariant.presentmentPrice
-    //     ) {
-    //         comparePriceEl.textContent = window.CurrencyUtils.formatMoneyCurrency(
-    //             String(parseFloat(matchedVariant.presentmentCompareAtPrice).toFixed(2)),
-    //             window.money_format
-    //         );
-    //         comparePriceEl.style.display = '';
-    //         if (separator) separator.style.display = '';
-    //         // Show discount badge
-    //         const percentOff = getDiscountPercent(
-    //             parseFloat(matchedVariant.presentmentPrice),
-    //             parseFloat(matchedVariant.presentmentCompareAtPrice)
-    //         );
-    //         if (percentOff && percentOff > 0) {
-    //             badgeEl.textContent = `${percentOff}% OFF`;
-    //             badgeEl.className = 'wishlist-discount-inline';
-    //             badgeEl.style.display = '';
-    //         } else {
-    //             badgeEl.style.display = 'none';
-    //         }
-    //     } else {
-    //         comparePriceEl.textContent = '';
-    //         comparePriceEl.style.display = 'none';
-    //         badgeEl.style.display = 'none';
-    //         if (separator) separator.style.display = 'none';
-    //     }
-
-    //     // Disable/enable Add to Cart button based on availability
-    //     if (matchedVariant.availableForSale === false) {
-    //         addToCartBtn.disabled = true;
-    //         if (atcTextSpan) atcTextSpan.textContent = 'Sold Out';
-    //         addToCartBtn.style.opacity = '0.5';
-    //         addToCartBtn.style.pointerEvents = 'none';
-    //     } else {
-    //         addToCartBtn.disabled = false;
-    //         if (atcTextSpan) atcTextSpan.textContent = buttonLabel;
-    //         addToCartBtn.style.opacity = '';
-    //         addToCartBtn.style.pointerEvents = '';
-    //     }
-
-    //     // Update product title to reflect selected variant
-    //     const productTitleEl = modal.querySelector('.wishlist-quick-view-product-title');
-    //     if (productTitleEl && matchedVariant) {
-    //         console.log('Updating product title with variant:', matchedVariant);
-    //         let baseTitle = product.title;
-    //         // If the product title ends with the first variant's title, remove it
-    //         const firstVariantTitle = product.variants.edges[0]?.title;
-    //         if (
-    //             firstVariantTitle &&
-    //             firstVariantTitle !== 'Default Title' &&
-    //             baseTitle.endsWith(' - ' + firstVariantTitle)
-    //         ) {
-    //             baseTitle = baseTitle.slice(0, -(' - ' + firstVariantTitle).length);
-    //         }
-    //         const formattedVariantTitle = formatVariantTitle(matchedVariant.title);
-    //         if (formattedVariantTitle && formattedVariantTitle !== 'Default Title') {
-    //             productTitleEl.textContent = baseTitle + ' - ' + formattedVariantTitle;
-    //         } else {
-    //             productTitleEl.textContent = baseTitle;
-    //         }
-    //     }
-    // }
-
-    // Call once to ensure correct price and title on open
     updatePriceByVariant();
 }
 
-// Utility to format variant title for display
 function formatVariantTitle(title) {
     return title && title.includes(' / ') ? title.replace(/ \/ /g, ' - ') : title;
 }
 
-// Renders individual star spans for ratings
 function renderStars(rating = 0) {
     let starsHtml = '';
     const roundedRating = Math.round(rating * 2) / 2;

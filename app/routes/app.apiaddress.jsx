@@ -11,7 +11,6 @@ export const loader = async ({ request }) => {
     return json({ message: "Missing customerId" }, { status: 400 });
   }
 
-
   const customerGID = `gid://shopify/Customer/${customerId}`;
 
   const query = `
@@ -49,7 +48,6 @@ export const loader = async ({ request }) => {
   `;
 
   const storeHostname = new URL(storeUrl).hostname;
-  console.log("address...........",storeHostname)
   const session = await prisma.session.findFirst({
     where: { shop: storeHostname },
     orderBy: { expires: "desc" },
@@ -78,7 +76,6 @@ export const loader = async ({ request }) => {
     });
 
     const jsonResponse = await response.json();
-    console.log("jsonResponse",jsonResponse);
     const addresses = jsonResponse?.data?.customer?.addresses || [];
     const defaultAddress = jsonResponse?.data?.customer?.defaultAddress || null;
     const lastAddress = addresses.length > 0 ? addresses[addresses.length - 1] : null;
@@ -104,7 +101,6 @@ export const loader = async ({ request }) => {
     });
 
   } catch (error) {
-    console.error("GraphQL Address Fetch Error:", error);
     return json({ message: "Internal Server Error" }, { status: 500 });
   }
 };

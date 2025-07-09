@@ -55,13 +55,11 @@ export const action = async ({ request }) => {
     var verified = false;
     var newToken = null;
     let storeUrl = body.storeUrl || "";
-   console.log("deleteUrl",storeUrl)
     const credentials = await getApiCredentials();
     const bearer_token = credentials?.token || null;
     const base_url = credentials?.baseUrl || null;
 
     verified = verifyHmac(customerId, secret);
-    
         if (!verified) {
           console.error("HMAC verification failed.");
           return json({ error: "Unauthorized" }, {
@@ -84,7 +82,6 @@ export const action = async ({ request }) => {
         newToken = jwtResponse.data.access_token;
         token = newToken;
       } catch (err) {
-       console.error("Failed to fetch JWT token:", err);
         return json({ error: "Unauthorized" }, {
           status: 401,
           headers: { "Access-Control-Allow-Origin": "*" }
@@ -104,7 +101,6 @@ export const action = async ({ request }) => {
 
   }
   catch (error) {
-    console.error("Error in action:", error);
     return json({ reply: "Internal Server Error" }, {
       status: 500,
       headers: { "Access-Control-Allow-Origin": "*" }

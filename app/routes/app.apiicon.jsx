@@ -19,7 +19,6 @@ export const loader = async ({ request }) => {
     );
 
   } catch (error) {
-    console.error("Loader Error:", error);
     return json(
       { reply: "Internal Server Error" },
       { status: 500, headers: { "Access-Control-Allow-Origin": "*" } }

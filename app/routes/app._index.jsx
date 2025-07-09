@@ -23,8 +23,7 @@ export default function Index() {
   return (
     <AppProvider i18n={{}}>
       <Page>
-        <TitleBar title="Dista App - Testing" />
-
+        <TitleBar title="Dista App - Account-Wishlist" />
         <Layout>
           <Layout.Section>
             <Card sectioned>
@@ -105,7 +104,7 @@ export default function Index() {
       </Page>
 
       <Page>
-      <TitleBar title="Dista App - Testing" />
+      <TitleBar title="Dista App - Account-Wishlist" />
 
       <Layout>
         <Layout.Section>

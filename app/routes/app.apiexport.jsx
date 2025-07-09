@@ -9,8 +9,6 @@ export async function action({ request }) {
     return json({ error: 'Email is required' }, { status: 400 });
   }
 
-  console.log("store_Id",storeId);
-
 //   const res = await fetch('https://your-backend-domain.com/api/send-csv-email', {
 //     method: 'POST',
 //     body: new URLSearchParams({ email, store_id: storeId }),
