@@ -27,17 +27,17 @@
                 <div class="itemPrice">{{ items.original_price | money_with_currency }}</div>
                 {% if order.cancelled %}
                   {% if order.financial_status == 'refunded' %}
-                    <div class="itemStatus" style="color:#1A8908">{{ order.financial_status }}</div>
+                    <div class="itemStatus" data-order-id="{{ order.id }}" style="color:#1A8908">{{ order.financial_status }}</div>
                   {% else %}
-                     <div class="itemStatus" style="color:#FDC028">Cancelled</div>
+                     <div class="itemStatus" data-order-id="{{ order.id }}" style="color:#FDC028">Cancelled</div>
                   {% endif %}
                 {% else %}
                     {% if order.financial_status == 'refunded' %}
-                      <div class="itemStatus" style="color:#1A8908">{{ order.financial_status }}</div>
+                      <div class="itemStatus" data-order-id="{{ order.id }}" style="color:#1A8908">{{ order.financial_status }}</div>
                     {% elsif order.fulfillment_status == 'unfulfilled' %}
-                       <div class="itemStatus" style="color:#FDC028">Pending</div>
+                       <div class="itemStatus" data-order-id="{{ order.id }}" style="color:#FDC028">Pending</div>
                     {% elsif order.fulfillment_status == 'fulfilled' %}
-                      <div class="itemStatus" style="color:#FDC028">In Transit</div>
+                      <div class="itemStatus" data-order-id="{{ order.id }}" style="color:#FDC028">In Transit</div>
                     {%  endif %}
                 {% endif %}
               </div>

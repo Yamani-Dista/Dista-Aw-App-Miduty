@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "83ede390ef8b7e1baf4619f07d16cf13"
-application_url = "https://dista-accountpage-wishlist.onrender.com"
+application_url = "https://isa-carlos-waiting-province.trycloudflare.com"
 embedded = true
 name = "Account-Wishlist"
 handle = "account-wishlist"
@@ -19,13 +19,13 @@ api_version = "2025-04"
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products,write_customers,read_customers,customer_write_customers,customer_read_customers"
+scopes = "write_products,write_customers,read_customers,customer_write_customers,customer_read_customers,read_orders,write_orders"
 
 [auth]
 redirect_urls = [
-  "https://dista-accountpage-wishlist.onrender.com/auth/callback",
-  "https://dista-accountpage-wishlist.onrender.com/auth/shopify/callback",
-  "https://dista-accountpage-wishlist.onrender.com/api/auth/callback"
+  "https://isa-carlos-waiting-province.trycloudflare.com/auth/callback",
+  "https://isa-carlos-waiting-province.trycloudflare.com/auth/shopify/callback",
+  "https://isa-carlos-waiting-province.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]

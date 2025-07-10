@@ -1,7 +1,6 @@
 
 window.WishlistUtils = {
   getCookie(name) {
-    console.log("Getting cookie:", name);
       const nameEQ = `${name}=`;
       let cookiesArray = document.cookie.split(';');
       for (let cookie of cookiesArray) {

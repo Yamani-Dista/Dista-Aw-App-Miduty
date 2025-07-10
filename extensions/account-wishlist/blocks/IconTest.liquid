@@ -9,7 +9,7 @@
       border-radius: 50%;
       padding: 6px;
       cursor: pointer;
-      z-index: 5;
+      z-index: 0;
       transition: transform 0.2s ease;
       background: rgba(255, 255, 255, 0.8);
       display: flex;
@@ -29,19 +29,19 @@
     }
   </style>
 
-  <script src="{{'getsetCookie.js' | asset_url }}" ></script>
-  <script src="{{ 'wishlist.js' | asset_url }}" ></script>
+  <script src="{{'getsetCookie.js' | asset_url }}" async></script>
+  <script src="{{ 'wishlist.js' | asset_url }}"async ></script>
  
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-    const wishlist = new WishlistIconManager({
+    window.wishlistIconManager = new WishlistIconManager({
       customerId: '{{ customer.id }}',
       storeUrl: '{{ shop.domain }}',
       uid: '{{ uid }}',
       currency: '{{ localization.country.currency.iso_code }}'
     });
 
-    wishlist.init();
+    window.wishlistIconManager.init();
   });
   </script>
 {% endif %}

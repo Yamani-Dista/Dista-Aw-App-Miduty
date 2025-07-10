@@ -150,7 +150,6 @@ async function fetchShopifyProducts(data, currency, storeUrl) {
   }
 
   const accessToken = session.accessToken
-
   const productResponse = await fetch(
     `https://${storeUrl}/admin/api/2023-10/graphql.json`,
     {
@@ -233,25 +232,13 @@ export const loader = async ({ request }) => {
   const url = new URL(request.url);
   let storeUrl = url.searchParams.get("storeUrl") || "";
   const storeDomain = storeUrl.split(".")[0];
-  if (url.searchParams.get('type') === 'css') {
-    const cssEntry = await prisma.wishlistCustom.findFirst({
-      where: { shop: storeUrl }
-    });
+  const cssEntry = await prisma.wishlistCustom.findFirst({
+    where: { shop: storeUrl }
+  });
+  const widgetSettings = await prisma.widgetSettings.findFirst({
+    where: { shop: storeUrl },
+  });
 
-    const widgetSettings = await prisma.widgetSettings.findFirst({
-      where: { shop: storeUrl },
-    });
-    return json(
-      {
-        reply: cssEntry,
-        widgetSettings: {
-          starsText: widgetSettings?.starsText || '{count} review/reviews',
-          saveText: widgetSettings?.saveText || 'Save {percent}%'
-        }
-      },
-      { headers: CORS_HEADERS }
-    );
-  }
   const customerId = url.searchParams.get("customerId") || "";
   let token = url.searchParams.get("token") || "";
   let currency = url.searchParams.get("currency") || "USD";
@@ -264,9 +251,15 @@ export const loader = async ({ request }) => {
   var verified = false;
   verified = await verifyHmac(customerId, secret);
   if (!verified) {
-    console.error("HMAC verification failed.");
     return json(
-      { error: "Unauthorized" },
+      {
+        error: "Unauthorized",
+        css: cssEntry,
+        widgetSettings: {
+          starsText: widgetSettings?.starsText || '{count} review/reviews',
+          saveText: widgetSettings?.saveText || 'Save {percent}%'
+        }
+      },
       {
         status: 401,
         headers: CORS_HEADERS,
@@ -277,12 +270,18 @@ export const loader = async ({ request }) => {
   try {
     const session = await prisma.session.findFirst({
       where: { shop: storeUrl },
-
     });
 
     if (!session || !session.accessToken) {
       return json(
-        { error: "Authentication required. Please reinstall the app." },
+        {
+          error: "Authentication required. Please reinstall the app.",
+          css: cssEntry,
+          widgetSettings: {
+            starsText: widgetSettings?.starsText || '{count} review/reviews',
+            saveText: widgetSettings?.saveText || 'Save {percent}%'
+          }
+        },
         {
           status: 401,
           headers: CORS_HEADERS,
@@ -292,7 +291,14 @@ export const loader = async ({ request }) => {
 
     if (session.expires && new Date(session.expires) < new Date()) {
       return json(
-        { error: "Session expired. Please reinstall the app." },
+        {
+          error: "Session expired. Please reinstall the app.",
+          css: cssEntry,
+          widgetSettings: {
+            starsText: widgetSettings?.starsText || '{count} review/reviews',
+            saveText: widgetSettings?.saveText || 'Save {percent}%'
+          }
+        },
         {
           status: 401,
           headers: CORS_HEADERS,
@@ -315,7 +321,14 @@ export const loader = async ({ request }) => {
         token = newToken;
       } catch (err) {
         return json(
-          { error: "Unauthorized" },
+          {
+            error: "Unauthorized",
+            css: cssEntry,
+            widgetSettings: {
+              starsText: widgetSettings?.starsText || '{count} review/reviews',
+              saveText: widgetSettings?.saveText || 'Save {percent}%'
+            }
+          },
           {
             status: 401,
             headers: CORS_HEADERS,
@@ -323,30 +336,64 @@ export const loader = async ({ request }) => {
         );
       }
     }
-
     const response = await axios.get(`${base_url}/internal/storefront/wishlist`, {
       headers: { Authorization: `Bearer ${token}` },
     });
 
-    const data = await response.data;
+    const data = response.data;
     if (!data.wishlist_items || !Array.isArray(data.wishlist_items) || data.wishlist_items.length === 0) {
       return json(
-        { reply: { data: { nodes: [] } }, data: [], token: newToken },
+        {
+          reply: { data: { nodes: [] } },
+          data: [],
+          token: newToken,
+          css: cssEntry,
+          widgetSettings: {
+            starsText: widgetSettings?.starsText || '{count} review/reviews',
+            saveText: widgetSettings?.saveText || 'Save {percent}%'
+          }
+        },
         { headers: CORS_HEADERS }
       );
     }
     const productIds = data.wishlist_items.map(product => product.product_id);
     const productData = await fetchShopifyProducts(productIds, currency, storeUrl);
     if (!productData.data || !productData.data.nodes) {
-      return json({ reply: "Invalid product data" }, { status: 500, headers: CORS_HEADERS });
+      return json(
+        {
+          reply: "Invalid product data",
+          css: cssEntry,
+          widgetSettings: {
+            starsText: widgetSettings?.starsText || '{count} review/reviews',
+            saveText: widgetSettings?.saveText || 'Save {percent}%'
+          }
+        },
+        { status: 500, headers: CORS_HEADERS }
+      );
     }
     return json(
-      { reply: productData, data: productIds, token: newToken },
+      {
+        reply: productData,
+        data: productIds,
+        token: newToken,
+        css: cssEntry,
+        widgetSettings: {
+          starsText: widgetSettings?.starsText || '{count} review/reviews',
+          saveText: widgetSettings?.saveText || 'Save {percent}%'
+        }
+      },
       { headers: CORS_HEADERS }
     );
   } catch (error) {
     return json(
-      { reply: "Internal Server Error" },
+      {
+        reply: "Internal Server Error",
+        css: cssEntry,
+        widgetSettings: {
+          starsText: widgetSettings?.starsText || '{count} review/reviews',
+          saveText: widgetSettings?.saveText || 'Save {percent}%'
+        }
+      },
       {
         status: 500,
         headers: CORS_HEADERS,

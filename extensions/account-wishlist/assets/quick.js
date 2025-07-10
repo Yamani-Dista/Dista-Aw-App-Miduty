@@ -77,7 +77,6 @@ function showWishlistModal(product, actionType, buttonTexts = {}) {
     if (document.querySelector('.wishlist-quick-view-modal-wrapper')) {
         return;
     }
-    console.log('showWishlistModal called with product:', product, 'actionType:', actionType, 'buttonTexts:', buttonTexts);
     const AppUtils = window.WishlistUtils;
     if (!AppUtils) {
         console.error('No utility object (WishlistUtils) found.');

@@ -1,5 +1,4 @@
 <script>
-  // Profile Edit Functions
   function profileEdit() {
     const editContainer = document.querySelector('.edit-profile');
     const mainContainer = document.querySelector('.profile-main-container');
@@ -13,9 +12,6 @@
     editContainer.style.display = 'none';
   }
 
- 
-
-  // Profile Save Function
   function profileSave(event) {
     event.preventDefault();
     const firstName = document.getElementsByName('customer[first_name]')[0]?.value || '';
@@ -53,8 +49,6 @@
         console.error('Fetch error:', error);
       });
   }
-
-
 
 </script>
 

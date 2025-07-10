@@ -28,7 +28,6 @@ export default function CombinedSettings() {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        console.log("shopinform.",shop)
         const response = await fetch(`/app/apimenu?storeUrl=${shop}`);
         const data = await response.json();
         if (data.reply && Array.isArray(data.reply.menuTabs)) {

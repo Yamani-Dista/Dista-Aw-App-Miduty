@@ -36,9 +36,17 @@ window.showOrderDeletePop = function (orderId) {
                 
                 if (cancelData.success) {
                     closeOrderDeletePop(orderId);
-                    button.disabled = true;
-                    button.innerText = 'Order Cancelled';
-                    window.location.reload();
+                    const cancelButton = document.querySelector(`button[data-order-id="${orderId}"]`);
+                    if (cancelButton) {
+                        cancelButton.disabled = true;
+                        cancelButton.innerText = 'Order Cancelled';
+                    }
+                    const orderDetails = document.querySelector(`.itemStatus[data-order-id="${orderId}"]`);
+                    if (orderDetails) {   
+                        orderDetails.innerText = 'Cancelled';
+                        orderDetails.style.color = '#FDC028';
+                    }
+                    
                 } else {
                     alert('Failed to cancel order. Please try again later.');
                 }

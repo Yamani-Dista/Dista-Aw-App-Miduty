@@ -47,12 +47,10 @@
     <div class="wishlist-carousel-wrapper" style="display: none;">
       <button class="wishlist-carousel-prev" aria-label="Previous products">❮</button>
       <div class="wishlist-carousel">
-        <!-- Products will be injected here -->
       </div>
       <button class="wishlist-carousel-next" aria-label="Next products">❯</button>
     </div>
     <div class="wishlist-grid" style="display: none;">
-      <!-- Products will be injected here -->
     </div>
     <div class="wishlist-show-more-container" style="display: none;">
       <button class="wishlist-show-more-button">Show More</button>
@@ -69,7 +67,7 @@
 
   <script src="{{ 'currency.js' | asset_url }}" async></script>
   <script src="{{ 'getsetCookie.js' | asset_url }}" async></script>
-  <script src="{{ 'card.js' | asset_url }}"></script>
+  <script src="{{ 'card.js' | asset_url }}" async></script>
   <script>
     class wishlistApp {
       constructor(container) {
@@ -96,7 +94,6 @@
         this.carouselController = null;
 
         document.addEventListener('wishlist:updated', () => {
-          console.log('Wishlist updated event received');
           this.fetchWishlist();
         });
         
@@ -119,33 +116,6 @@
         }
       }
 
-      {% comment %} async init() {
-        const observer = new IntersectionObserver(
-          async (entries) => {
-            for (const entry of entries) {
-              if (entry.isIntersecting) {
-                await this.fetchWishlist();
-              }
-            }
-          },
-          { root: null, threshold: 0.1 }
-        );
-
-        observer.observe(this.container);
-
-        if (this.titleElement) {
-          this.titleElement.textContent = this.container.dataset.wishlistTitle || 'Wishlist Products';
-        }
-
-        if (this.displayMode === 'carousel') {
-          this.carouselWrapper.style.display = 'block';
-          this.grid.style.display = 'none';
-        } else {
-          this.carouselWrapper.style.display = 'none';
-          this.grid.style.display = 'grid';
-        }
-      } {% endcomment %}
-
       async fetchWishlist() {
         const customerId = '{{ customer.id }}';
         const storeUrl = '{{ shop.domain }}';
@@ -155,13 +125,15 @@
 
         const currency = this.container.dataset.currency;
         let settings;
-        try {
+
+        {% comment %} try {
           const response = await fetch(`/apps/apw/app/apiwishlist?type=css&storeUrl=${storeUrl}`);
           settings = await response.json();
-          console.log("''''''''''''''''",settings)
         } catch (err) {
           console.error('Error fetching settings:', err);
-        }
+        } {% endcomment %}
+        
+        
         let products = [];
         try {
           const fetchUrl = `/apps/apw/app/apiwishlist?customerId=${customerId}&storeUrl=${storeUrl}&uid=${uid}&token=${
@@ -173,13 +145,12 @@
             throw new Error(`HTTP error! status: ${response.status}`);
           }
           const result = await response.json();
-          console.log('Wishlist fetch result:', result);
           if (result.token && !jwtToken) {
             globalToken = result.token;
             window.WishlistUtils.setCookie('jwt', globalToken, 3.5);
           }
           products = result.reply?.data?.nodes || [];
-
+          settings = {css: result.css || {}, widgetSettings: result.widgetSettings || {} };
           this.processSettings(settings);
           this.processProducts(settings,products);
         } catch (error) {
@@ -189,15 +160,15 @@
       }
 
       processSettings(data) {
-        if (data.reply) {
+        if (data.css) {
           this.reply = {
-            displayMode: data.reply.displayMode || 'carousel',
-            productsPerRow: parseInt(data.reply.productsPerRow) || 3,
-            initialProducts: parseInt(data.reply.initialProducts) || 6,
-            showAddToCart: data.reply.showAddToCart ?? true,
-            showBuyNow: data.reply.showBuyNow ?? true,
-            cardLayout: data.reply.cardLayout || 'vertical',
-            css: data.reply.css,
+            displayMode: data.css.displayMode || 'carousel',
+            productsPerRow: parseInt(data.css.productsPerRow) || 3,
+            initialProducts: parseInt(data.css.initialProducts) || 6,
+            showAddToCart: data.css.showAddToCart ?? true,
+            showBuyNow: data.css.showBuyNow ?? true,
+            cardLayout: data.css.cardLayout || 'vertical',
+            css: data.css.css,
           };
 
           this.container.dataset.displayMode = this.reply.displayMode;
@@ -246,7 +217,6 @@
         this.products = products;
         this.widgetSettings = settings.widgetSettings;
         if (this.products.length > 0) {
-          // Show the container now that products are ready
           this.container.style.opacity = '1';
           this.container.style.pointerEvents = 'auto';
 
@@ -263,18 +233,15 @@
       }
 
       renderProducts() {
-        console.log('render products called');
         const targetContainer = this.displayMode === 'carousel' ? this.carousel : this.grid;
         const productsToShow =
-          this.displayMode === 'grid' ? Math.min(this.products.length, this.initialProducts) : this.products.length;
+        this.displayMode === 'grid' ? Math.min(this.products.length, this.initialProducts) : this.products.length;
 
         this.currentlyShown = productsToShow;
         targetContainer.innerHTML = '';
         
         const cardRenderer = new ProductCardRendererwishlist(this.reply,this.widgetSettings);
-        console.log("no. of products:",productsToShow,)
         this.products.slice(0, productsToShow).forEach((product) => {
-          console.log("its product",product)
           if(product){
           const card = cardRenderer.createCard(product);
           targetContainer.appendChild(card);}
@@ -338,7 +305,7 @@
       });
     });
 
-    document.addEventListener('DOMContentLoaded', function () {
+    {% comment %} document.addEventListener('DOMContentLoaded', function () {
       function processProductCardCSS(css) {
         return css
           .split('\n')
@@ -353,7 +320,7 @@
         styleElement.id = 'wishlist-custom-css-injected';
         document.head.appendChild(styleElement);
       }
-    });
+    }); {% endcomment %}
   </script>
 {% endif %}
 {% schema %}
