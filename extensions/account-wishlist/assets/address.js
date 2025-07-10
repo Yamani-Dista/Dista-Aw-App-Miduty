@@ -1,4 +1,5 @@
 
+
 function getIdFromGid(gid) {
     if (typeof gid === 'string') {
         const match = gid.match(/\/(\d+)(\?|$)/);
@@ -32,9 +33,9 @@ function closeAddForm() {
 }
 
 
-function addressEdit(id, address, formIdName, customerId,isNotDefault,storeUrl) {
+function addressEdit(id, address, formIdName, customerId, isNotDefault, storeUrl) {
     if (!id || !address) return;
-    addEditForm(id, address, customerId, formIdName, isNotDefault,storeUrl);
+    addEditForm(id, address, customerId, formIdName, isNotDefault, storeUrl);
     let mainContainer = document.querySelector('.main-address');
     if (formIdName === "address-block-profile-") {
         mainContainer = document.querySelector('.profile-main-container');
@@ -52,9 +53,9 @@ function closeEditForm(event, formIdName) {
         const mainContainer = document.querySelector('.profile-main-container');
         if (mainContainer) mainContainer.style.display = 'flex';
     }
-    else{
-    const mainContainer = document.querySelector('.main-address');
-    if (mainContainer) mainContainer.style.display = 'flex';
+    else {
+        const mainContainer = document.querySelector('.main-address');
+        if (mainContainer) mainContainer.style.display = 'flex';
     }
 }
 
@@ -199,7 +200,7 @@ function injectDefaultAddress(address, customerId, storeUrl) {
     }
 }
 
-function injectOtherAddresses(addresses, defaultAddressId, customerId,storeUrl) {
+function injectOtherAddresses(addresses, defaultAddressId, customerId, storeUrl) {
     const formIdName = "address-block-";
     defaultAddressId = getIdFromGid(defaultAddressId);
 
@@ -214,7 +215,7 @@ function injectOtherAddresses(addresses, defaultAddressId, customerId,storeUrl) 
 
     addresses.forEach(address => {
         let id = getIdFromGid(address.id);
-        if (id === defaultAddressId) return; 
+        if (id === defaultAddressId) return;
 
         let addressDiv = container.querySelector(`#address-${id}`);
         if (!addressDiv) {
@@ -357,8 +358,8 @@ function injectOtherAddresses(addresses, defaultAddressId, customerId,storeUrl) 
     });
 }
 
-async function fetchAddresses(customerId,storeUrl) {
-    const response = await fetch( `/apps/apw/app/apiaddress?customerId=${customerId}&storeUrl=${storeUrl}`);
+async function fetchAddresses(customerId, storeUrl) {
+    const response = await fetch(`/apps/apw/app/apiaddress?customerId=${customerId}&storeUrl=${storeUrl}`);
     if (!response.ok) throw new Error('Failed to fetch addresses');
     const data = await response.json();
     return {
@@ -368,7 +369,7 @@ async function fetchAddresses(customerId,storeUrl) {
     };
 }
 
-async function handleDeleteSubmit(event, id, customerId,storeUrl) {
+async function handleDeleteSubmit(event, id, customerId, storeUrl) {
     event.preventDefault();
     const form = event.target;
     try {
@@ -379,17 +380,30 @@ async function handleDeleteSubmit(event, id, customerId,storeUrl) {
         });
         if (!response.ok) throw new Error('Delete failed');
         closeDeletePop(id);
-        const { allAddress, defaultAddress } = await fetchAddresses(customerId,storeUrl);
-        injectDefaultAddress(defaultAddress, customerId,storeUrl);
-        injectOtherAddresses(allAddress, defaultAddress ? defaultAddress.id : null, customerId,storeUrl);
-        updateDefaultAddress(defaultAddress, customerId,storeUrl);
+        const { allAddress, defaultAddress } = await fetchAddresses(customerId, storeUrl);
+        injectDefaultAddress(defaultAddress, customerId, storeUrl);
+        injectOtherAddresses(allAddress, defaultAddress ? defaultAddress.id : null, customerId, storeUrl);
+        updateDefaultAddress(defaultAddress, customerId, storeUrl);
     } catch (error) {
         console.error('Error:', error);
-        alert('Failed to delete address. Please try again.');
+        // alert('Failed to delete address. Please try again.');
+        if (error.message === 'Delete failed') {
+            message = "Failed to delete address. Please try again.";
+        } else {
+            message = "An unexpected error occurred.";
+        }
+        Toastify({
+            text: message,
+            duration: 3000,
+            gravity: "top",
+            position: "right",
+            backgroundColor: "rgba(132, 143, 252,1)",
+            close: true, // Adds a close button
+        }).showToast();
     }
 }
 
-async function handleEditSubmit(event, id, customerId, formIdName,storeUrl) {
+async function handleEditSubmit(event, id, customerId, formIdName, storeUrl) {
     event.preventDefault();
     const form = event.target;
     const formData = new FormData(form);
@@ -401,17 +415,31 @@ async function handleEditSubmit(event, id, customerId, formIdName,storeUrl) {
         });
         if (!response.ok) throw new Error('Update failed');
         closeEditForm(event, formIdName);
-        const { allAddress, defaultAddress } = await fetchAddresses(customerId,storeUrl);
-        injectDefaultAddress(defaultAddress, customerId,storeUrl);
-        injectOtherAddresses(allAddress, defaultAddress ? defaultAddress.id : null, customerId,storeUrl);
-        updateDefaultAddress(defaultAddress, customerId,storeUrl);
+        const { allAddress, defaultAddress } = await fetchAddresses(customerId, storeUrl);
+        injectDefaultAddress(defaultAddress, customerId, storeUrl);
+        injectOtherAddresses(allAddress, defaultAddress ? defaultAddress.id : null, customerId, storeUrl);
+        updateDefaultAddress(defaultAddress, customerId, storeUrl);
     } catch (error) {
         console.error('Error:', error);
-        alert('Failed to update address. Please try again.');
+        // alert('Failed to update address. Please try again.');
+        let message;
+        if (error.message === 'Update failed') {
+            message = "Failed to update address. Please try again.";
+        } else {
+            message = "An unexpected error occurred.";
+        }
+        Toastify({
+            text: message,
+            duration: 3000,
+            gravity: "top",
+            position: "right",
+            backgroundColor: "rgba(132, 143, 252,1)",
+            close: true, // Adds a close button
+        }).showToast();
     }
 }
 
-function addEditForm(id, address, customerId, formIdName, isNotDefault,storeUrl ) {  
+function addEditForm(id, address, customerId, formIdName, isNotDefault, storeUrl) {
     let addressId = id;
     address.id = addressId;
     const editDiv = document.createElement('div');
@@ -491,7 +519,7 @@ function addEditForm(id, address, customerId, formIdName, isNotDefault,storeUrl 
     }
 }
 
-async function handleAddAddress(event, customerId,storeUrl) {
+async function handleAddAddress(event, customerId, storeUrl) {
     event.preventDefault();
     const form = event.target;
     const formData = new FormData(form);
@@ -503,18 +531,33 @@ async function handleAddAddress(event, customerId,storeUrl) {
         });
         if (!response.ok) throw new Error('Add failed');
         closeAddForm();
-        const { allAddress, defaultAddress } = await fetchAddresses(customerId,storeUrl);
-        injectDefaultAddress(defaultAddress, customerId,storeUrl);
-        injectOtherAddresses(allAddress, defaultAddress ? defaultAddress.id : null, customerId,storeUrl);
-        updateDefaultAddress(defaultAddress, customerId,storeUrl);
+        const { allAddress, defaultAddress } = await fetchAddresses(customerId, storeUrl);
+        injectDefaultAddress(defaultAddress, customerId, storeUrl);
+        injectOtherAddresses(allAddress, defaultAddress ? defaultAddress.id : null, customerId, storeUrl);
+        updateDefaultAddress(defaultAddress, customerId, storeUrl);
         form.reset();
     } catch (error) {
         console.error('Error:', error);
-        alert('Failed to add address. Please try again.');
+        // alert('Failed to add address. Please try again.');
+        let message;
+        if (error.message.includes('Add failed')) {
+            message = "Failed to add address. Please try again.";
+        }
+        else {
+            message = "An unexpected error occurred.";
+        }
+        Toastify({
+            text: message,
+            duration: 3000, 
+            gravity: "top", 
+            position: "right", 
+           backgroundColor: "rgba(132, 143, 252,1)",
+            close: true, // Adds a close button
+        }).showToast();
     }
 }
 
-function updateDefaultAddress(address, customerId,storeUrl) {
+function updateDefaultAddress(address, customerId, storeUrl) {
     const formIdName = 'address-block-profile-';
     const isNotDefault = false
     const container = document.querySelector('.profile-default-address .profile-address-container');

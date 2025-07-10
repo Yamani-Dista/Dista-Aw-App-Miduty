@@ -19,7 +19,15 @@ window.showOrderDeletePop = function (orderId) {
                 eval(script); 
             } catch (e) {
                 console.error("Error running stored script:", e);
-                alert('Order cancellation script failed to execute properly.');
+                // alert('Order cancellation script failed to execute properly.');
+                Toastify({
+                      text: "Failed to cancel order. Please try again later.",
+                      duration: 3000,
+                      gravity: "top", 
+                      position: "right",
+                      backgroundColor: "rgba(132, 143, 252,1)",
+                      close: true, 
+                  }).showToast();
             }
         } 
         else {
@@ -48,16 +56,40 @@ window.showOrderDeletePop = function (orderId) {
                     }
                     
                 } else {
-                    alert('Failed to cancel order. Please try again later.');
+                    // alert('Failed to cancel order. Please try again later.');
+                    Toastify({
+                        text: "Failed to cancel order. Please try again later.",
+                        duration: 3000,
+                        gravity: "top", 
+                        position: "right",
+                        backgroundColor: "rgba(132, 143, 252,1)",
+                        close: true, // Adds a close button
+                    }).showToast();
                 }
             } catch (err) {
                 console.error(err);
-                alert('An error occurred during order cancellation.');
+                // alert('An error occurred during order cancellation.');
+                Toastify({
+                    text: "An error occurred during order cancellation.",
+                    duration: 3000,
+                    gravity: "top", 
+                    position: "right",
+                    backgroundColor: "rgba(132, 143, 252,1)",
+                    close: true, // Adds a close button
+                }).showToast();
             }
         }
     } catch (error) {
         console.error('Error in cancellation process:', error);
-        alert('An error occurred while processing your request.');
+        // alert('An error occurred while processing your request.');
+        Toastify({
+            text: "An error occurred while processing your request.",
+            duration: 3000,
+            gravity: "top", 
+            position: "right",
+            backgroundColor: "rgba(132, 143, 252,1)",
+            close: true, // Adds a close button
+        }).showToast();
     }
   }
 
@@ -74,8 +106,16 @@ window.showOrderDeletePop = function (orderId) {
       });
     }catch(err)
     {
-      console.error("Error in handleBuyAgain:", error);
-      alert("Couldn't prepare your order. Please try again.");
+      // console.error("Error in handleBuyAgain:", err);
+      // alert("Couldn't prepare your order. Please try again.");
+      Toastify({
+          text: "Couldn't prepare your order. Please try again.",
+          duration: 3000,
+          gravity: "top", 
+          position: "right",
+          backgroundColor: "rgba(132, 143, 252,1)",
+          close: true, // Adds a close button
+      }).showToast();
     }
   }
 
@@ -103,8 +143,16 @@ window.showOrderDeletePop = function (orderId) {
         }
         window.location.href = '/checkout';
       } catch (error) {
-        console.error("Error in handleBuyAgain:", error);
-        alert("Couldn't prepare your order. Please try again.");
+        // console.error("Error in handleBuyAgain:", error);
+        // alert("Couldn't prepare your order. Please try again.");
+        Toastify({
+          text: "Couldn't prepare your order. Please try again.",
+          duration: 3000,
+          gravity: "top", 
+          position: "right",
+          backgroundColor: "rgba(132, 143, 252,1)",
+          close: true, // Adds a close button
+        }).showToast();
         button.disabled = false;
         button.textContent = originalText;
       }

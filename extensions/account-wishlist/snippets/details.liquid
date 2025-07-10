@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script>
   function profileEdit() {
     const editContainer = document.querySelector('.edit-profile');
@@ -47,6 +49,15 @@
       })
       .catch((error) => {
         console.error('Fetch error:', error);
+        profileClose();
+         Toastify({
+                text: "An error occurred while saving your profile.",
+                duration: 3000, 
+                gravity: "top", 
+                position: "right", 
+                backgroundColor: "rgba(132, 143, 252,1)",
+                close: true,
+            }).showToast();
       });
   }
 
