@@ -1,7 +1,7 @@
 {% if customer.id %}
   {%- assign uid = customer.id | hmac_sha256: 'Polina' -%}
 
-  <link rel="stylesheet" href="{{ 'Carousel.css' | asset_url }}">
+  <link rel="stylesheet" href="{{ 'Carousel.min.css' | asset_url }}">
 
   <style>
     .wishlist-items {
@@ -67,7 +67,7 @@
 
   <script src="{{ 'currency.js' | asset_url }}" async></script>
   <script src="{{ 'getsetCookie.js' | asset_url }}" async></script>
-  <script src="{{ 'card.js' | asset_url }}" async></script>
+  <script src="{{ 'card.min.js' | asset_url }}" async></script>
   <script>
     class wishlistApp {
       constructor(container) {

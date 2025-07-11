@@ -29,12 +29,12 @@
     }
   </style>
 
-  <script src="{{'getsetCookie.js' | asset_url }}" async></script>
-  <script src="{{ 'wishlist.js' | asset_url }}"async ></script>
+  <script src="{{'getsetCookie.js' | asset_url }}" ></script>
+  <script src="{{ 'wishlist.min.js' | asset_url }}" ></script>
  
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-    window.wishlistIconManager = new WishlistIconManager({
+     window.wishlistIconManager = new WishlistIconManager({
       customerId: '{{ customer.id }}',
       storeUrl: '{{ shop.domain }}',
       uid: '{{ uid }}',

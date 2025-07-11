@@ -1,5 +1,5 @@
 {% if template.name == 'account' %}
-  {{ 'tabs.css' | asset_url | stylesheet_tag }}
+  {{ 'tabs.min.css' | asset_url | stylesheet_tag }}
   <div id="custom-account-content">
     <div class="Account-loader">
       <div class="loader-spinner"></div>
@@ -207,7 +207,7 @@
     container.innerHTML += `
       <div id="popupModal" class="custom-modal" style="display: none;">
         <div class="custom-modal-content">
-          <img src="{{ 'logout.png' | asset_url }}" width="95px" height="58px"/>
+          <img src="{{ 'logout.png' | asset_url }}" width="134px" height="102px"/>
           <div>Are you sure you want to logout?</div>
           <div class="custom-modal-actions">
             <div>

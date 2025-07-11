@@ -3,7 +3,7 @@
 
   {%- assign layout = cardLayout | default: 'vertical' -%}
 
-  <link rel="stylesheet" href="{{ 'product-card.css' | asset_url }}">
+  <link rel="stylesheet" href="{{ 'product-card.min.css' | asset_url }}">
 
   <div
     class="wishlist-card {% if layout == 'horizontal' %}wishlist-card--horizontal{% endif %}"
@@ -82,8 +82,8 @@
   </div>
 {% endif %}
 
-{{ 'quick-view.css' | asset_url | stylesheet_tag }}
-<script src="{{ 'quick.js' | asset_url }}" async></script>
+{{ 'quick-view.min.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'quick.min.js' | asset_url }}" async></script>
 <script>
   (function () {
     const styleId = 'wishlist-custom-quick-view-styles';
