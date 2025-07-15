@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "7929d25b8c115c4f086be3c658a7a327"
-application_url = "https://dista-aw-app-miduty.onrender.com"
+application_url = "https://dista-aw-app-miduty-ea21.onrender.com"
 embedded = true
 name = "Dista AW App - Miduty"
 handle = "dista-aw-app-miduty"
@@ -23,13 +23,13 @@ scopes = "write_products,write_customers,read_customers,customer_write_customers
 
 [auth]
 redirect_urls = [
-  "https://dista-aw-app-miduty.onrender.com/auth/callback",
-  "https://dista-aw-app-miduty.onrender.com/auth/shopify/callback",
-  "https://dista-aw-app-miduty.onrender.com/api/auth/callback"
+  "https://dista-aw-app-miduty-ea21.onrender.com/auth/callback",
+  "https://dista-aw-app-miduty-ea21.onrender.com/auth/shopify/callback",
+  "https://dista-aw-app-miduty-ea21.onrender.com/api/auth/callback"
 ]
 
 [app_proxy]
-url = "https://dista-aw-app-miduty.onrender.com"
+url = "https://dista-aw-app-miduty-ea21.onrender.com"
 subpath = "apw"
 prefix = "apps"
 
