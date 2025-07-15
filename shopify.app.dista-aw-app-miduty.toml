@@ -1,0 +1,16 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "7929d25b8c115c4f086be3c658a7a327"
+application_url = "https://example.com/"
+embedded = true
+name = "Dista AW App - Miduty"
+handle = "dista-aw-app-miduty"
+
+[webhooks]
+api_version = "2025-07"
+
+[auth]
+redirect_urls = [ "https://example.com/api/auth" ]
+
+[pos]
+embedded = false
