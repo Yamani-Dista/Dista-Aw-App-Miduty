@@ -1,4 +1,3 @@
-console.log('helloooooooo quick')
 document.body.addEventListener('click', function (event) {
     if (event.target.closest('.quick-view-btn')) {
         const button = event.target.closest('.quick-view-btn');
@@ -37,6 +36,8 @@ document.body.addEventListener('click', function (event) {
                         window.location.href = '/checkout';
                     });
                 } else {
+                    if (button.dataset.addingToCart === 'true') return;
+                    button.dataset.addingToCart = 'true';
                     fetch('/cart/add.js', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -668,23 +669,37 @@ function renderStars(rating = 0) {
 }
 
   function updateCartCount() {
-    fetch('/cart.js')
-      .then((response) => response.json())
-      .then((cart) => {
-        const cartCountBubble = document.querySelector('#cart-icon-bubble .cart-count-bubble span[aria-hidden="true"]');
-        const cartCountVisuallyHidden = document.querySelector('#cart-icon-bubble .cart-count-bubble .visually-hidden');
+  fetch('/cart.js')
+    .then((response) => response.json())
+    .then((cart) => {
+      const cartIconBubble = document.querySelector('#cart-icon-bubble');
+      const cartCountBubble = cartIconBubble.querySelector('.cart-count-bubble');
+      const itemCount = cart.item_count || 0; // Default to 0 if undefined
 
-        if (cartCountBubble && cartCountVisuallyHidden) {
-          const itemCount = cart.item_count || 0;
+      // If the cart-count-bubble does not exist, create it
+      if (!cartCountBubble && itemCount > 0) {
+        const newCartCountBubble = document.createElement('div');
+        newCartCountBubble.className = 'cart-count-bubble';
+        newCartCountBubble.innerHTML = `
+          <span aria-hidden="true">${itemCount}</span>
+          <span class="visually-hidden">${itemCount} item${itemCount > 1 ? 's' : ''}</span>
+        `;
+        cartIconBubble.appendChild(newCartCountBubble);
 
-          // Update the visible cart count
-          cartCountBubble.textContent = itemCount;
-
-          // Update the visually hidden cart count for accessibility
-          cartCountVisuallyHidden.textContent = `${itemCount} items`;
-        }
-      })
-      .catch((error) => {
-        console.error('Error updating cart count:', error);
-      });
-  }
+        // Update the cart icon SVG to the "filled" version
+        const cartIconSvg = cartIconBubble.querySelector('svg');
+        cartIconSvg.classList.remove('icon-cart-empty');
+        cartIconSvg.classList.add('icon-cart');
+        cartIconSvg.innerHTML = `
+          <path fill="currentColor" fill-rule="evenodd" d="M20.5 6.5a4.75 4.75 0 00-4.75 4.75v.56h-3.16l-.77 11.6a5 5 0 004.99 5.34h7.38a5 5 0 004.99-5.33l-.77-11.6h-3.16v-.57A4.75 4.75 0 0020.5 6.5zm3.75 5.31v-.56a3.75 3.75 0 10-7.5 0v.56h7.5zm-7.5 1h7.5v.56a3.75 3.75 0 11-7.5 0v-.56zm-1 0v.56a4.75 4.75 0 109.5 0v-.56h2.22l.71 10.67a4 4 0 01-3.99 4.27h-7.38a4 4 0 01-4-4.27l.72-10.67h2.22z"></path>
+        `;
+      } else if (cartCountBubble) {
+        // Update the existing cart-count-bubble
+        cartCountBubble.querySelector('span[aria-hidden="true"]').textContent = itemCount;
+        cartCountBubble.querySelector('.visually-hidden').textContent = `${itemCount} item${itemCount > 1 ? 's' : ''}`;
+      }
+    })
+    .catch((error) => {
+      console.error('Error updating cart count:', error);
+    });
+}
