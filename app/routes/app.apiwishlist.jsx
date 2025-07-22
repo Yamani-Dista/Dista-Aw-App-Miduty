@@ -61,6 +61,7 @@ export const action = async ({ request }) => {
   if (request.method === "OPTIONS") {
     return new Response(null, { status: 204, headers: CORS_HEADERS });
   }
+  console.log('hiiii')
 
   try {
     const body = await request.json();
